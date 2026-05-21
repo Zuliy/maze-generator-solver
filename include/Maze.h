@@ -1,6 +1,9 @@
 #ifndef MAZE_H
 #define MAZE_H
 
+#include <stack>
+#include <utility>
+#include <cstdlib>
 #include <vector>
 using namespace std;
 
@@ -12,10 +15,12 @@ private:
     vector<vector<bool>> northWall;
     vector<vector<bool>> eastWall;
     vector<vector<bool>> visited;
+    stack<pair<int, int>> st;
 
 public:
     Maze(int rows, int cols);
     void display();
+    void generateMaze();
 };
 
 #endif

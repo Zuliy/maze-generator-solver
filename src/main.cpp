@@ -5,7 +5,9 @@ using namespace std;
 
 int main()
 {
-    Maze maze(5, 5);
+    Maze maze(10, 10);
+
+    maze.generateMaze();
 
     maze.display();
 

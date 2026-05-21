@@ -50,3 +50,69 @@ void Maze::display()
         cout << "+" << endl;
     }
 }
+
+void Maze::generateMaze()
+{
+
+    // start from (0,0)
+    int r = 0;
+    int c = 0;
+
+    visited[r][c] = true;
+    st.push({r, c});
+
+    while (!st.empty())
+    {
+
+        r = st.top().first;
+        c = st.top().second;
+
+        vector<pair<int, int>> neighbors;
+
+        // UP
+        if (r > 0 && !visited[r - 1][c])
+            neighbors.push_back({r - 1, c});
+
+        // DOWN
+        if (r < R - 1 && !visited[r + 1][c])
+            neighbors.push_back({r + 1, c});
+
+        // LEFT
+        if (c > 0 && !visited[r][c - 1])
+            neighbors.push_back({r, c - 1});
+
+        // RIGHT
+        if (c < C - 1 && !visited[r][c + 1])
+            neighbors.push_back({r, c + 1});
+
+        if (!neighbors.empty())
+        {
+
+            // pick random neighbor
+            int idx = rand() % neighbors.size();
+            int nr = neighbors[idx].first;
+            int nc = neighbors[idx].second;
+
+            // REMOVE WALL between (r,c) and (nr,nc)
+
+            // vertical move
+            if (nr == r + 1)
+                northWall[r][c] = false;
+            if (nr == r - 1)
+                northWall[nr][nc] = false;
+
+            // horizontal move
+            if (nc == c + 1)
+                eastWall[r][c] = false;
+            if (nc == c - 1)
+                eastWall[nr][nc] = false;
+
+            visited[nr][nc] = true;
+            st.push({nr, nc});
+        }
+        else
+        {
+            st.pop(); // backtrack
+        }
+    }
+}
