@@ -17,13 +17,13 @@ Maze::Maze(int rows, int cols)
     visited = vector<vector<bool>>(R, vector<bool>(C, false));
 }
 
-/* ---------------- DELAY FUNCTION ---------------- */
-void delay()
+/* ---------------- DELAY ---------------- */
+void Maze::delay()
 {
-    this_thread::sleep_for(chrono::milliseconds(100));
+    this_thread::sleep_for(chrono::milliseconds(50));
 }
 
-/* ---------------- DISPLAY MAZE + MOUSE ---------------- */
+/* ---------------- DISPLAY MAZE ---------------- */
 void Maze::display(int cr, int cc)
 {
     for (int j = 0; j < C; j++)
@@ -38,6 +38,8 @@ void Maze::display(int cr, int cc)
         {
             if (i == cr && j == cc)
                 cout << " R ";
+            else if (i == R - 1 && j == C - 1)
+                cout << " G ";
             else
                 cout << "   ";
 
@@ -59,7 +61,7 @@ void Maze::display(int cr, int cc)
     }
 }
 
-/* ---------------- MAZE GENERATION (DFS STACK) ---------------- */
+/* ---------------- MAZE GENERATION (DFS) ---------------- */
 void Maze::generateMaze()
 {
     int r = 0, c = 0;
@@ -109,7 +111,7 @@ void Maze::generateMaze()
     }
 }
 
-/* ---------------- MAZE SOLVER (VISUAL DFS) ---------------- */
+/* ---------------- SOLVER ---------------- */
 void Maze::solveMaze()
 {
     stack<pair<int, int>> st;
@@ -125,6 +127,7 @@ void Maze::solveMaze()
         c = st.top().second;
 
         cout << "\033[2J\033[1;1H"; // clear screen
+
         display(r, c);
         delay();
 

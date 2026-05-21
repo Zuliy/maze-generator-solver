@@ -1,12 +1,9 @@
 #ifndef MAZE_H
 #define MAZE_H
 
-#include <chrono>
-#include <thread>
+#include <vector>
 #include <stack>
 #include <utility>
-#include <cstdlib>
-#include <vector>
 using namespace std;
 
 class Maze
@@ -19,8 +16,11 @@ private:
     vector<vector<bool>> visited;
     stack<pair<int, int>> st;
 
+    void delay();
+
 public:
     Maze(int rows, int cols);
+
     void display(int cr, int cc);
     void generateMaze();
     void solveMaze();
