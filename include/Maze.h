@@ -1,6 +1,8 @@
 #ifndef MAZE_H
 #define MAZE_H
 
+#include <chrono>
+#include <thread>
 #include <stack>
 #include <utility>
 #include <cstdlib>

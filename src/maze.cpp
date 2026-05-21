@@ -1,5 +1,7 @@
 #include "../include/Maze.h"
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 using namespace std;
 
@@ -117,11 +119,15 @@ void Maze::generateMaze()
     }
 }
 
+void delay()
+{
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+}
+
 void Maze::solveMaze()
 {
 
     stack<pair<int, int>> st;
-
     vector<vector<bool>> visitedSolve(R, vector<bool>(C, false));
 
     int r = 0, c = 0;
@@ -134,7 +140,29 @@ void Maze::solveMaze()
         r = st.top().first;
         c = st.top().second;
 
-        // GOAL CONDITION (bottom-right cell)
+        // MARK CURRENT PATH
+        cout << "\033[2J\033[1;1H"; // clear screen (IMPORTANT)
+
+        for (int i = 0; i < R; i++)
+        {
+            for (int j = 0; j < C; j++)
+            {
+
+                if (i == r && j == c)
+                    cout << "R "; // red mouse
+
+                else if (visitedSolve[i][j])
+                    cout << ". "; // visited path
+
+                else
+                    cout << "# "; // unexplored
+            }
+            cout << endl;
+        }
+
+        delay();
+
+        // GOAL
         if (r == R - 1 && c == C - 1)
         {
             cout << "Maze Solved!" << endl;
@@ -143,19 +171,15 @@ void Maze::solveMaze()
 
         vector<pair<int, int>> neighbors;
 
-        // MOVE UP
         if (r > 0 && !visitedSolve[r - 1][c] && !northWall[r - 1][c])
             neighbors.push_back({r - 1, c});
 
-        // MOVE DOWN
         if (r < R - 1 && !visitedSolve[r + 1][c] && !northWall[r][c])
             neighbors.push_back({r + 1, c});
 
-        // MOVE LEFT
         if (c > 0 && !visitedSolve[r][c - 1] && !eastWall[r][c - 1])
             neighbors.push_back({r, c - 1});
 
-        // MOVE RIGHT
         if (c < C - 1 && !visitedSolve[r][c + 1] && !eastWall[r][c])
             neighbors.push_back({r, c + 1});
 
@@ -171,7 +195,6 @@ void Maze::solveMaze()
         }
         else
         {
-            // DEAD END → backtrack
             st.pop();
         }
     }
