@@ -21,6 +21,7 @@ public:
     Maze(int rows, int cols);
     void display();
     void generateMaze();
+    void solveMaze();
 };
 
 #endif

@@ -11,5 +11,7 @@ int main()
 
     maze.display();
 
+    maze.solveMaze();
+
     return 0;
 }

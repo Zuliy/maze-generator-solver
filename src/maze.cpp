@@ -116,3 +116,63 @@ void Maze::generateMaze()
         }
     }
 }
+
+void Maze::solveMaze()
+{
+
+    stack<pair<int, int>> st;
+
+    vector<vector<bool>> visitedSolve(R, vector<bool>(C, false));
+
+    int r = 0, c = 0;
+    st.push({r, c});
+    visitedSolve[r][c] = true;
+
+    while (!st.empty())
+    {
+
+        r = st.top().first;
+        c = st.top().second;
+
+        // GOAL CONDITION (bottom-right cell)
+        if (r == R - 1 && c == C - 1)
+        {
+            cout << "Maze Solved!" << endl;
+            return;
+        }
+
+        vector<pair<int, int>> neighbors;
+
+        // MOVE UP
+        if (r > 0 && !visitedSolve[r - 1][c] && !northWall[r - 1][c])
+            neighbors.push_back({r - 1, c});
+
+        // MOVE DOWN
+        if (r < R - 1 && !visitedSolve[r + 1][c] && !northWall[r][c])
+            neighbors.push_back({r + 1, c});
+
+        // MOVE LEFT
+        if (c > 0 && !visitedSolve[r][c - 1] && !eastWall[r][c - 1])
+            neighbors.push_back({r, c - 1});
+
+        // MOVE RIGHT
+        if (c < C - 1 && !visitedSolve[r][c + 1] && !eastWall[r][c])
+            neighbors.push_back({r, c + 1});
+
+        if (!neighbors.empty())
+        {
+
+            int idx = rand() % neighbors.size();
+            int nr = neighbors[idx].first;
+            int nc = neighbors[idx].second;
+
+            visitedSolve[nr][nc] = true;
+            st.push({nr, nc});
+        }
+        else
+        {
+            // DEAD END → backtrack
+            st.pop();
+        }
+    }
+}
