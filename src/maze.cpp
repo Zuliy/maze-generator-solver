@@ -2,9 +2,11 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include <cstdlib>
 
 using namespace std;
 
+/* ---------------- CONSTRUCTOR ---------------- */
 Maze::Maze(int rows, int cols)
 {
     R = rows;
@@ -15,24 +17,29 @@ Maze::Maze(int rows, int cols)
     visited = vector<vector<bool>>(R, vector<bool>(C, false));
 }
 
-void Maze::display()
+/* ---------------- DELAY FUNCTION ---------------- */
+void delay()
 {
-    // TOP BORDER
+    this_thread::sleep_for(chrono::milliseconds(100));
+}
+
+/* ---------------- DISPLAY MAZE + MOUSE ---------------- */
+void Maze::display(int cr, int cc)
+{
     for (int j = 0; j < C; j++)
-    {
         cout << "+---";
-    }
     cout << "+" << endl;
 
     for (int i = 0; i < R; i++)
     {
-
-        // LEFT WALL
         cout << "|";
 
         for (int j = 0; j < C; j++)
         {
-            cout << "   ";
+            if (i == cr && j == cc)
+                cout << " R ";
+            else
+                cout << "   ";
 
             if (eastWall[i][j])
                 cout << "|";
@@ -41,7 +48,6 @@ void Maze::display()
         }
         cout << endl;
 
-        // BOTTOM WALLS
         for (int j = 0; j < C; j++)
         {
             if (northWall[i][j])
@@ -53,57 +59,41 @@ void Maze::display()
     }
 }
 
+/* ---------------- MAZE GENERATION (DFS STACK) ---------------- */
 void Maze::generateMaze()
 {
-
-    // start from (0,0)
-    int r = 0;
-    int c = 0;
+    int r = 0, c = 0;
 
     visited[r][c] = true;
     st.push({r, c});
 
     while (!st.empty())
     {
-
         r = st.top().first;
         c = st.top().second;
 
         vector<pair<int, int>> neighbors;
 
-        // UP
         if (r > 0 && !visited[r - 1][c])
             neighbors.push_back({r - 1, c});
-
-        // DOWN
         if (r < R - 1 && !visited[r + 1][c])
             neighbors.push_back({r + 1, c});
-
-        // LEFT
         if (c > 0 && !visited[r][c - 1])
             neighbors.push_back({r, c - 1});
-
-        // RIGHT
         if (c < C - 1 && !visited[r][c + 1])
             neighbors.push_back({r, c + 1});
 
         if (!neighbors.empty())
         {
-
-            // pick random neighbor
             int idx = rand() % neighbors.size();
             int nr = neighbors[idx].first;
             int nc = neighbors[idx].second;
 
-            // REMOVE WALL between (r,c) and (nr,nc)
-
-            // vertical move
+            // remove walls
             if (nr == r + 1)
                 northWall[r][c] = false;
             if (nr == r - 1)
                 northWall[nr][nc] = false;
-
-            // horizontal move
             if (nc == c + 1)
                 eastWall[r][c] = false;
             if (nc == c - 1)
@@ -114,19 +104,14 @@ void Maze::generateMaze()
         }
         else
         {
-            st.pop(); // backtrack
+            st.pop();
         }
     }
 }
 
-void delay()
-{
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-}
-
+/* ---------------- MAZE SOLVER (VISUAL DFS) ---------------- */
 void Maze::solveMaze()
 {
-
     stack<pair<int, int>> st;
     vector<vector<bool>> visitedSolve(R, vector<bool>(C, false));
 
@@ -136,33 +121,13 @@ void Maze::solveMaze()
 
     while (!st.empty())
     {
-
         r = st.top().first;
         c = st.top().second;
 
-        // MARK CURRENT PATH
-        cout << "\033[2J\033[1;1H"; // clear screen (IMPORTANT)
-
-        for (int i = 0; i < R; i++)
-        {
-            for (int j = 0; j < C; j++)
-            {
-
-                if (i == r && j == c)
-                    cout << "R "; // red mouse
-
-                else if (visitedSolve[i][j])
-                    cout << ". "; // visited path
-
-                else
-                    cout << "# "; // unexplored
-            }
-            cout << endl;
-        }
-
+        cout << "\033[2J\033[1;1H"; // clear screen
+        display(r, c);
         delay();
 
-        // GOAL
         if (r == R - 1 && c == C - 1)
         {
             cout << "Maze Solved!" << endl;
@@ -185,7 +150,6 @@ void Maze::solveMaze()
 
         if (!neighbors.empty())
         {
-
             int idx = rand() % neighbors.size();
             int nr = neighbors[idx].first;
             int nc = neighbors[idx].second;

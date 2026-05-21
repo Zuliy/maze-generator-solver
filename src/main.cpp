@@ -9,8 +9,6 @@ int main()
 
     maze.generateMaze();
 
-    maze.display();
-
     maze.solveMaze();
 
     return 0;

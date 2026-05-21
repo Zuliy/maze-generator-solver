@@ -21,7 +21,7 @@ private:
 
 public:
     Maze(int rows, int cols);
-    void display();
+    void display(int cr, int cc);
     void generateMaze();
     void solveMaze();
 };
