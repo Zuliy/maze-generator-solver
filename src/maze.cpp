@@ -204,7 +204,8 @@ void Maze::updateEastWall(int i, int j)
 // ============================================================
 //  DIFF-BASED DISPLAY — only paints what changed since last call.
 //
-//  Each call:
+//  Each call:0
+
 //    1. Erase the OLD mouse position (restore its real content).
 //    2. Paint the NEW mouse position with "R".
 //    3. Update any wall that was just eaten (caller sets lastWall*).
@@ -278,31 +279,40 @@ void Maze::eatExtraWall()
 {
     if (R < 3 || C < 3)
         return;
+
     int r = 1 + rand() % (R - 2);
     int c = 1 + rand() % (C - 2);
+
     int dir = rand() % 4;
-    if (dir == 0)
+
+    // UP
+    if (dir == 0 && r < R - 1)
     {
         northWall[r][c] = false;
         updateNorthWall(r, c);
     }
-    else if (dir == 1)
+
+    // DOWN
+    else if (dir == 1 && r > 1)
     {
         northWall[r - 1][c] = false;
         updateNorthWall(r - 1, c);
     }
-    else if (dir == 2)
+
+    // RIGHT
+    else if (dir == 2 && c < C - 1)
     {
         eastWall[r][c] = false;
         updateEastWall(r, c);
     }
-    else
+
+    // LEFT
+    else if (dir == 3 && c > 1)
     {
         eastWall[r][c - 1] = false;
         updateEastWall(r, c - 1);
     }
 }
-
 // ============================================================
 //  MAZE GENERATION
 // ============================================================
